@@ -1,4 +1,11 @@
 import art
+import os
+
+def clear_screen():
+    if os.name == 'posix':
+        _ = os.system('clear')
+    else:
+        _ = os.system('cls')
 
 
 def add(a, b):
@@ -45,8 +52,6 @@ operations = {
 }
 
 # Program start
-print(art.logo)
-
 quit_program = False
 cleared = True
 
@@ -58,6 +63,8 @@ operator = ""
 
 while not quit_program:
     if cleared:
+        clear_screen()
+        print(art.logo)
         result = 0
         operator = ""
         left_side = get_number("left")
