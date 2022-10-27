@@ -17,7 +17,7 @@ def divide(a, b):
     return a / b
 
 
-def get_input(side):
+def get_number(side):
     number = ""
     while number == "":
         try:
@@ -29,12 +29,20 @@ def get_input(side):
 
 def get_operation():
     mode = " "
-    while mode not in OPERATIONS:
+    while mode not in operations:
         try:
             mode = input("Pick an operation ( + - * / ): ")
         except ValueError:
             print(f"{ENTER_VALID} option.")
     return mode
+
+
+operations = {
+    "+": add,
+    "-": subtract,
+    "*": multiply,
+    "/": divide
+}
 
 # Program start
 print(art.logo)
@@ -42,48 +50,39 @@ print(art.logo)
 quit_program = False
 cleared = True
 
-OPERATIONS = "+-*/"
+# OPERATIONS = "+-*/"
 ENTER_VALID = "Please enter a valid"
 
 result = 0
-operation = ""
+operator = ""
 
 while not quit_program:
     if cleared:
         result = 0
-        operation = ""
-        num1 = get_input("left")
+        operator = ""
+        left_side = get_number("left")
     else:
-        num1 = result
+        left_side = result
 
     if cleared:
-        operation = get_operation()
+        operator = get_operation()
 
-    num2 = get_input("right")
+    right_side = get_number("right")
 
     # Perform operations
-    if operation == "+":
-        result = add(num1, num2)
-        print(f"{num1} + {num2} = {result}")
-    elif operation == "-":
-        result = subtract(num1, num2)
-        print(f"{num1} - {num2} = {result}")
-    elif operation == "*":
-        result = multiply(num1, num2)
-        print(f"{num1} * {num2} = {result}")
+    if operator == "/" and right_side == 0:
+        print("Cannot divide by 0.")
+        result = left_side
+        cleared = False
+        continue
     else:
-        if num2 != 0:
-            result = divide(num1, num2)
-            print(f"{num1} / {num2} = {result}")
-        else:
-            print("Cannot divide by 0.")
-            result = num1
-            cleared = False
-            continue
+        calculation_function = operations[operator]
+        result = calculation_function(left_side, right_side)
+        print(f"{left_side} + {right_side} = {result}")
 
     # Get next step
     while True:
-        print("What next? (C)lear, E(x)it, or Pick an operation ( + - * / ): ")
+        print("What next? (C)lear, E(x)it, or perform an operation on current result ( + - * / ): ")
         try:
             next_step = input(f"{result} ").upper()
             next_step = next_step[0]
@@ -98,8 +97,7 @@ while not quit_program:
                 break
             else:
                 cleared = False
-                operation = next_step
+                operator = next_step
                 break
         except IndexError:
             print(f"{ENTER_VALID} option.")
-
